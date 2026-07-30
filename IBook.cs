@@ -15,5 +15,12 @@ namespace BookStoreConsoleApp
 
         bool UpdateBook(string title, string author, decimal price, int quantity);
 
+
+    }
+
+    public interface IUser
+    {
+        bool Login(string username, string password);
+
     }
 }
