@@ -1,20 +1,25 @@
-﻿using System;
+﻿using Microsoft.Data.SqlClient; // Required package
+using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
-using System;
-using Microsoft.Data.SqlClient; // Required package
 using System.Threading.Tasks;
 
 namespace BookStoreConsoleApp
 {
     internal class DBLayer
     {
+        string connString;
+        public DBLayer()
+        {
+            connString = "Server=IRFANS-DESKTOP\\SQLEXPRESS;Database=BookStore;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;User Id=irfan;Password=admin123";
+        }
 
         public bool SaveBookDataToDB(string bookName, string bookPrice)
         {
             string insertQuery = "INSERT INTO Book (BookName, Price) VALUES ('" + bookName + "', " + bookPrice + ")";
-            string connString = "Server=IRFANS-DESKTOP\\SQLEXPRESS;Database=BookStore;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;User Id=irfan;Password=admin123";
             SqlConnection connection = new SqlConnection(connString);
             SqlCommand command = new SqlCommand(insertQuery, connection);
             connection.Open();
@@ -23,6 +28,30 @@ namespace BookStoreConsoleApp
 
             return true;
         }
+
+        public string ReadBookDataFromDB(int Id)
+        {
+            string insertQuery = "Select * from Book";
+            
+            SqlConnection connection = new SqlConnection(connString);
+            SqlCommand command = new SqlCommand(insertQuery, connection);
+            connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+            string result = string.Empty;
+            while (reader.Read())
+            {
+                // Access columns by index or column name
+                string id = reader["Id"].ToString();
+                string name = reader["BookName"].ToString();
+                string price = reader["Price"].ToString();
+
+                result = $"{id}\t{name}\t{price}";
+            }
+            connection.Close();
+
+            return result;
+        }
+
         //}
 
 
