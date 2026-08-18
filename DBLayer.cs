@@ -2,6 +2,7 @@
 using System;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
@@ -31,7 +32,7 @@ namespace BookStoreConsoleApp
 
         public string ReadBookDataFromDB(int Id)
         {
-            string insertQuery = "Select * from Book";
+            string insertQuery = "Select * from Book where ID=" + Id;
             
             SqlConnection connection = new SqlConnection(connString);
             SqlCommand command = new SqlCommand(insertQuery, connection);
@@ -50,6 +51,23 @@ namespace BookStoreConsoleApp
             connection.Close();
 
             return result;
+        }
+
+
+        public DataTable ReadBookDataFromDBViaAdapter(int Id)
+        {
+            string insertQuery = "Select * from Book where Id = @bookId";
+
+            SqlConnection connection = new SqlConnection(connString);
+            SqlCommand command = new SqlCommand(insertQuery, connection);
+            command.Parameters.AddWithValue("@bookId", Id);
+            connection.Open();
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            connection.Close();
+            DataTable productsTable = new DataTable();
+            adapter.Fill(productsTable);
+
+            return productsTable;
         }
 
         //}
